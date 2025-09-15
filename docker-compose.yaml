@@ -1,0 +1,39 @@
+# version: "3.9"
+
+services:
+  redis:
+    profiles: [ "livekit" ]
+    image: redis
+    container_name: app.dev.livekit.redis
+    networks:
+      - app.redis.network
+    volumes:
+      - app.redis.data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+
+  livekit:
+    profiles: ["livekit"]
+    image: livekit/livekit-server
+    container_name: app.dev.livekit
+    command: --dev --redis-host redis:6379
+    networks:
+      - app.redis.network
+    ports:
+      - "127.0.0.1:7880:7880"  # WS
+      - "127.0.0.1:7881:7881"  # TCP
+    depends_on:
+        redis:
+          condition: service_healthy
+volumes:
+  app.redis.data: { }
+
+networks:
+      app.redis.network: { }
