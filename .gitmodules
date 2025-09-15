@@ -1,0 +1,8 @@
+[submodule "agent-tutor-api"]
+	path = agent-tutor-api
+	url = git@github.com:laskarj/agent-tutor-api.git
+    branch = main
+[submodule "agent-tutor-ui"]
+	path = agent-tutor-ui
+	url = git@github.com:laskarj/agent-tutor-ui.git
+    branch = main
