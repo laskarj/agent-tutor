@@ -5,12 +5,14 @@ services:
     profiles: [ "livekit" ]
     image: redis
     container_name: app.dev.livekit.redis
-    networks:
-      - app.redis.network
+    network_mode: host
+
+    #    networks:
+#      - app.redis.network
     volumes:
       - app.redis.data:/data
-    ports:
-      - "127.0.0.1:6379:6379"
+#    ports:
+#      - "127.0.0.1:6379:6379"
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
@@ -23,17 +25,21 @@ services:
     profiles: ["livekit"]
     image: livekit/livekit-server
     container_name: app.dev.livekit
-    command: --dev --redis-host redis:6379
-    networks:
-      - app.redis.network
-    ports:
-      - "127.0.0.1:7880:7880"  # WS
-      - "127.0.0.1:7881:7881"  # TCP
+    command: --dev --redis-host localhost:6379
+    network_mode: host
+
+    #    environment:
+#      - LIVEKIT_URL=ws://127.0.0.1:7880
+#    networks:
+#      - app.redis.network
+#    ports:
+#      - "127.0.0.1:7880:7880"  # WS
+#      - "127.0.0.1:7881:7881"  # TCP
     depends_on:
         redis:
           condition: service_healthy
 volumes:
   app.redis.data: { }
 
-networks:
-      app.redis.network: { }
+#networks:
+#      app.redis.network: { }
